@@ -1,0 +1,65 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+// METRICS
+prometheus.scrape "backend" {
+  targets = [
+    {
+      __address__      = "backend:8000",
+      __metrics_path__ = "/metrics",
+      job              = "text-analyzer-backend",
+    },
+  ]
+  scrape_interval = "5s"
+  forward_to      = [prometheus.remote_write.mimir.receiver]
+}
+
+prometheus.remote_write "mimir" {
+  endpoint {
+    url = "http://mimir:9009/api/v1/push"
+  }
+}
+
+// LOGS
+// Alloy needs access to the Docker socket to discover Compose containers.
+discovery.docker "containers" {
+  host             = "unix:///var/run/docker.sock"
+  refresh_interval = "5s"
+}
+
+discovery.relabel "containers" {
+  targets = discovery.docker.containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+}
+
+loki.source.docker "containers" {
+  host             = "unix:///var/run/docker.sock"
+  targets          = discovery.docker.containers.targets
+  labels           = {environment = "lab107"}
+  relabel_rules    = discovery.relabel.containers.rules
+  refresh_interval = "5s"
+  forward_to       = [loki.process.containers.receiver]
+}
+
+loki.process "containers" {
+  stage.docker {}
+  forward_to = [loki.write.local.receiver]
+}
+
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "annotations": {"list": []},
+  "editable": false,
+  "graphTooltip": 0,
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "mimir"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "options": {
+        "legend": {"displayMode": "list", "placement": "bottom"},
+        "tooltip": {"mode": "single"}
+      },
+      "targets": [
+        {"expr": "sum(app_requests_total)", "refId": "A"}
+      ],
+      "title": "Всего API-запросов",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "mimir"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "options": {
+        "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false},
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "value"
+      },
+      "targets": [
+        {"expr": "sum(app_tasks_created_total)", "refId": "A"}
+      ],
+      "title": "Создано задач",
+      "type": "stat"
+    },
+    {
+      "datasource": {"type": "loki", "uid": "loki"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 12, "w": 24, "x": 0, "y": 8},
+      "id": 3,
+      "options": {
+        "dedupTable": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": true,
+        "showLabels": true,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLines": false
+      },
+      "targets": [
+        {"expr": "{service=\"backend\"}", "refId": "A"}
+      ],
+      "title": "Логи Backend",
+      "type": "logs"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 41,
+  "tags": ["lab107", "monitoring"],
+  "templating": {"list": []},
+  "time": {"from": "now-15m", "to": "now"},
+  "title": "Laboratory 107 — Monitoring",
+  "uid": "lab107-monitoring",
+  "version": 1
+}

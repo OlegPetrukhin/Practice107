@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Лабораторная №107 — анализ текста</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <div class="muted">Лабораторная работа №107</div>
+      <h1>Анализ текста</h1>
+      <p>Backend создаёт задачу, Worker обрабатывает её отдельно, а Redis хранит состояние и очередь.</p>
+
+      <label for="text">Текст</label>
+      <textarea id="text" rows="8" placeholder="Введите текст для анализа..."></textarea>
+
+      <button id="send">Запустить анализ</button>
+      <div id="message" class="message"></div>
+
+      <div id="result" class="result hidden">
+        <div><b>Task ID:</b> <code id="taskId"></code></div>
+        <div><b>Статус:</b> <span id="status"></span></div>
+        <pre id="output"></pre>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
